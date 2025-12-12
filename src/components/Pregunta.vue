@@ -7,36 +7,32 @@
   <img v-if="imagen" :src="imagen" alt="" />
   <div class="pregunta-container">
     <h1>Pregunta</h1>
-    <input
-      type="text"
-      placeholder="Haz una pregunta"
-      @keypress.enter="llamadaAPI"
-    />
+    <input v-model="pregunta" type="text" placeholder="Haz una pregunta" />
     <p>Recuerda terminar con el signo de interrogación (?)</p>
-    <h2>Sere millonario</h2>
+    <h2>{{ pregunta }}</h2>
     <h1 v-if="!respuesta">Yes, NO</h1>
-    <p v-if="respuesta">{{ respuesta }}</p>
+    <p class="respuesta" v-if="respuesta">{{ respuesta }}</p>
   </div>
 </template>
 
 <script>
+import { consumirAPIFacade } from '@/clients/YesNoClient'
 export default {
   data() {
-    return { imagen: null, respuesta: null }
+    return { imagen: null, respuesta: null, pregunta: null }
+  },
+  watch: {
+    pregunta(value, oldValue) {
+      if (!value.includes('?')) return
+      this.consumir()
+    }
   },
   methods: {
-    llamadaAPI() {
-      fetch('https://yesno.wtf/api')
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data)
-
-          this.respuesta = data.answer
-          this.imagen = data.image
-        })
-        .catch((error) => {
-          console.error('Error:', error)
-        })
+    async consumir() {
+      const resp = await consumirAPIFacade()
+      console.log(resp)
+      this.respuesta = resp.answer
+      this.imagen = resp.image
     }
   }
 }
@@ -70,5 +66,10 @@ input {
 }
 input:focus {
   outline: none;
+}
+.respuesta {
+  font-size: 24px;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 </style>
