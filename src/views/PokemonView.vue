@@ -1,11 +1,12 @@
 <template>
   <div class="container">
-    <PokemonImagen :pokemonId="pokemonGanador" />
+    <PokemonImagen v-if="destruir" :pokemonId="pokemonGanador" />
     <PokemonOpciones
       @seleccionado="evaluarGanador($event)"
       :listaPokemons="pokemonArr"
     />
     <p v-if="mensaje">{{ mensaje }}</p>
+    <button @click="destruirComponente">Destruir</button>
   </div>
 </template>
 <script>
@@ -24,12 +25,37 @@ export default {
     return {
       pokemonArr: [],
       pokemonGanador: null,
-      mensaje: null
+      mensaje: null,
+      destruir: true
     }
   },
+  // Crea el componente
+  beforeCreate() {
+    console.log('beforeCreate: apenas inicia la instancia del componente')
+  },
+  created() {
+    console.log('created: ya se resolvieron data, computed, methods, watch')
+  },
+  // Monta el componente en el DOM: renderiza o visualiza el componente
+  beforeMount() {
+    console.log(
+      'beforeMount: justo antes del primer render de un elemento HTML'
+    )
+  },
   mounted() {
+    console.log('mounted: el componente ya se renderizó en el DOM')
     this.iniciarJuego()
   },
+  // Actualizacion de un componente
+  beforeUpdate() {
+    console.log(
+      'beforeUpdate: cuando cambió data/props y Vue está por re-renderizar'
+    )
+  },
+  updated() {
+    console.log('updated: cuando ya se actualizó tras el re-renderización')
+  },
+
   methods: {
     async iniciarJuego() {
       this.pokemonArr = await obtenerVectorPokemonesFacade()
@@ -44,6 +70,12 @@ export default {
       } else {
         this.mensaje = '¡Has ganado! ¡Felicidades!'
       }
+      setTimeout(() => {
+        this.iniciarJuego()
+      }, 2000)
+    },
+    destruirComponente() {
+      this.destruir = false // Método para destruir el componente
     }
   }
 }
