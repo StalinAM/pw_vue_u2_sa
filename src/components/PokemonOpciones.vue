@@ -1,24 +1,32 @@
 <template>
   <div class="opciones-container">
     <ul>
-      <li>Pokemon 1</li>
-      <li>Pokemon 2</li>
-      <li>Pokemon 3</li>
-      <li>Pokemon 4</li>
+      <li
+        @click="pasarPadre(pokemon.id)"
+        v-for="pokemon in listaPokemons"
+        :key="pokemon.id"
+      >
+        {{ pokemon.nombre }}
+      </li>
     </ul>
   </div>
 </template>
 <script>
-import { consumirAPIFacade } from '@/clients/PokemonClient.js'
 export default {
   data() {
     return {
       nombresPokemones: []
     }
   },
+  methods: {
+    pasarPadre(id) {
+      this.$emit('seleccionado', id) //Enviar al padre
+    }
+  },
+
   props: {
-    pokemonId: {
-      type: Number,
+    listaPokemons: {
+      type: Array,
       required: true
     }
   }

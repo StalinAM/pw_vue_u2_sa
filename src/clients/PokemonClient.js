@@ -28,6 +28,10 @@ const obtenerVectorPokemones = async () => {
   return vectorPokemones
 }
 
-export async function consumirAPIFacade(pokemonId) {
-  return await consumirAPI(pokemonId)
+export async function obtenerVectorPokemonesFacade() {
+  return await obtenerVectorPokemones()
+}
+
+export function obtenerAleatorioFacade(min, max) {
+  return obtenerAleatorio(min, max)
 }
